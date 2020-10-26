@@ -1,0 +1,18 @@
+[
+{
+"employeeId" : 41,
+"employeeName" : "srinu",
+"employeeDept" : "JAVA",
+"employeeSalary" : 40000,
+"employeeAddress" : "knr",
+"employeePhoneno" : "8008620004"
+},
+{
+"employeeId" : 42,
+"employeeName" : "yatish",
+"employeeDept" : "MULE",
+"employeeSalary" : 50000,
+"employeeAddress" : "tenali",
+"employeePhoneno" : "6281940183"
+}
+]

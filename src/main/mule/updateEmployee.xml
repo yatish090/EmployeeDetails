@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="updateEmployeeFlow" doc:id="152545a6-5458-43e8-8b05-953f2a4f4727" >
+		<ee:transform doc:name="Transform Message" doc:id="8bf6de11-d8d7-4fbf-b563-759cff24d824" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="ic" ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:select doc:name="Select" doc:id="a3f4fc0d-592d-4ebe-a5a7-a4b9fe546385" config-ref="Database_Config">
+			<db:sql >select * from employee where empId=:empId;</db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	empId : vars.ic.employeeId
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="f0574b42-e54a-43d8-a3f3-ba04acc72b97" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+"employeeId" : vars.ic.employeeId,
+"employeeName" : if(vars.ic.employeeName != null) vars.ic.employeeName else payload.employeeName[0],
+"employeeDept" : if(vars.ic.employeeDept != null) vars.ic.employeeDept else payload.employeeDept[0],
+"employeeSalary" : if(vars.ic.employeeSalary != null) vars.ic.employeeSalary else payload.employeeSalary[0],
+"employeeAddress" : if(vars.ic.employeeAddress != null) vars.ic.employeeAddress else payload.employeeAddress[0],
+"employeePhoneno" : if(vars.ic.employeePhoneno != null) vars.ic.employeePhoneno else payload.employeePhoneno[0]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:update doc:name="Update" doc:id="2677038f-04a5-4f57-9a3a-7043eae0bcb4" config-ref="Database_Config">
+			<db:sql >UPDATE employee
+SET employeeName = :employeeName,employeeDept = :employeeDept,employeeSalary = :employeeSalary,employeePhoneno=:employeePhoneno,
+employeeAddress =:employeeAddress
+WHERE empId = :employeeId;</db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	employeeName : payload.employeeName,
+	employeeId : payload.employeeId,
+	employeeDept : payload.employeeDept,
+	employeeSalary : payload.employeeSalary,
+	employeeAddress : payload.employeeAddress,
+	employeePhoneno : payload.employeePhoneno
+	
+}]]]></db:input-parameters>
+		</db:update>
+		<logger level="INFO" doc:name="Logger" doc:id="298f2b4c-e2a8-4a1e-9d26-e1500b3660aa" />
+	</flow>
+</mule>

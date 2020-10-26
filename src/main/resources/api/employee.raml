@@ -1,0 +1,71 @@
+#%RAML 1.0
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/252f0472-8959-419d-ac8d-23e8c2d1553f/ # 
+title: Employee
+types:
+  employee: !include dataTypes/employeeDataType.raml
+  updateEmp: !include dataTypes/updateEmployeeDataType.raml
+traits:
+  headers: !include traits/headers.raml
+/employee:
+  post:
+    is:
+      - headers:
+    body:
+      application/json:
+        type: employee[]
+        example: !include samples/employee.json
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              {
+                "message":"successfully added"
+                }
+  /{id}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include samples/singleEmployeeResponse.json
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include samples/employee.json
+  put:
+    is:
+     - headers:
+    body:
+      application/json:
+       type: updateEmp
+       example: !include samples/singleEmployeeResponse.json
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+               {
+                  "message":"successfully modified"
+                } 
+               
+  delete:
+    queryParameters:
+      empId:
+        type: integer
+        required: true
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+                {
+                  "message":"successfully deleted"
+                }
+         
+          
+              
+
+              

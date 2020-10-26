@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="getSingleEmployeeFlow" doc:id="7241cba2-791d-4636-85da-e0688e1bfb81" >
+		<logger level="INFO" doc:name="Logger" doc:id="cdb7da8f-383b-4ad6-9879-58a96984c9f0" />
+		<db:select doc:name="Select" doc:id="9a84fbf7-2615-4d61-b222-02d3fb3c963b" config-ref="Database_Config">
+			<db:sql >SELECT * FROM employee  where empId = :empId;</db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	empId : attributes.uriParams.id
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="0b03e3c5-e64e-41a0-a4ea-fc0e34fb7b78" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+"employeeId" : payload.empId[0],
+"employeeName" : payload.employeeName[0],
+"employeeDept" : payload.employeeDept[0],
+"employeeSalary" : payload.employeeSalary[0],
+"employeeAddress" : payload.employeeAddress[0],
+"employeePhoneno" : payload.employeePhoneno[0]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="47ea5f8d-4389-422e-a010-d33e6cc2c343" />
+	</flow>
+</mule>

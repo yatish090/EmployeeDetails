@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="2dee67ed-7b65-43f4-92a5-7d27c4728d4b" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="practice" />
+	</db:config>
+	<flow name="saveEmployeeFlow" doc:id="9fd6d003-4367-4425-a7ec-cd287b70956e" >
+		<logger level="INFO" doc:name="Logger" doc:id="b3dbe779-3955-403c-bdd8-11f3a21a6bb0" />
+		<foreach doc:name="For Each" doc:id="77bedb33-0a9e-46cb-a2b9-ee6e6cded5f8" >
+			<db:insert doc:name="Insert" doc:id="166172c9-0c62-4bd5-b119-847ea13eb253" config-ref="Database_Config">
+				<db:sql >insert into employee values(:employeeId,:employeeName,:employeeDept,:employeeSalary,
+:employeeAddress,:employeePhoneno);</db:sql>
+				<db:input-parameters ><![CDATA[#[{
+	employeeId : payload.employeeId,
+	employeeName : payload.employeeName,
+	employeeDept : payload.employeeDept,
+	employeeSalary : payload.employeeSalary,
+	employeeAddress : payload.employeeAddress,
+	employeePhoneno : payload.employeePhoneno
+}]]]></db:input-parameters>
+			</db:insert>
+		</foreach>
+	</flow>
+</mule>
